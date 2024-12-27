@@ -9,5 +9,7 @@ fn main() {
     println!("{}", board);
 
     board.turn_avalanche(&ID::One, &StartPit::Mine);
+    board.turn_avalanche(&ID::One, &StartPit::Mine);
+    board.turn_avalanche(&ID::One, &StartPit::Mine);
     println!("{}", board);
 }

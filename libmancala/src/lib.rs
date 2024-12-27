@@ -1,12 +1,22 @@
 #![allow(dead_code)]
 
+pub mod mancala_game;
+
 use std::fmt;
 use std::mem;
 
 const PIT_SIZE: usize = 14;
-const PIT_LAST: usize = PIT_SIZE - 1;
+pub const PIT_LAST: usize = PIT_SIZE - 1;
+
+extern "C" {
+    pub fn place_stone(index: f32);
+    pub fn take_stones(index: f32);
+    pub fn turn_end();
+    pub fn game_end();
+}
 
 #[derive(Copy, Clone)]
+#[repr(C)]
 struct Pit {
     stone_count: u8,
 }
@@ -19,11 +29,13 @@ impl Pit {
     const fn new() -> Self {
         Self { stone_count: 2 }
     }
+
     const fn empty() -> Self {
         Self { stone_count: 0 }
     }
 }
 
+#[repr(C)]
 pub struct Board {
     // should always have playerid 1
     player_1: Player,
@@ -39,6 +51,10 @@ impl Default for Board {
 }
 
 impl Board {
+    const fn marble_count(&self, index: usize) -> u8 {
+        self.slots[index].stone_count
+    }
+
     pub const fn new() -> Self {
         Self {
             player_1: Player { id: ID::One },
@@ -49,11 +65,12 @@ impl Board {
 
     pub fn turn_avalanche(&mut self, player: &ID, start: &StartPit) {
         let index = start.as_index(player);
-        self.avalanche_inner(index, player)
+        self.avalanche_inner(index, player);
+        //unsafe { turn_end() };
     }
 
     fn avalanche_inner(&mut self, index: usize, player: &ID) {
-        println!("{}", self);
+        //unsafe { take_stones(index as f32) };
         let stones = self.slots[index].take();
         // go again if we end on zero
         if let AvalancheTurnResult::Continue { ended_at } =
@@ -63,7 +80,11 @@ impl Board {
         }
     }
 
-    const fn take_turn(&mut self, stones: u8, index: usize, player: &ID) -> AvalancheTurnResult {
+    fn take_turn(&mut self, stones: u8, index: usize, player: &ID) -> AvalancheTurnResult {
+        if stones == 0 {
+            return AvalancheTurnResult::Done;
+        }
+        //unsafe { place_stone(index as f32) };
         let remaining = Self::add_stone(&mut self.slots[index], stones);
         if remaining == 0 {
             if self.slots[index].stone_count == 1 {
@@ -136,6 +157,7 @@ enum AvalancheTurnResult {
     Continue { ended_at: usize },
 }
 
+#[repr(u8)]
 pub enum StartPit {
     Mine,
     One,
@@ -172,6 +194,7 @@ impl StartPit {
     }
 }
 
+#[repr(u8)]
 pub enum ID {
     One,
     Two,
@@ -183,6 +206,7 @@ impl ID {
     }
 }
 
+#[repr(C)]
 struct Player {
     id: ID,
 }

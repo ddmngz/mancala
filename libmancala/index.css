@@ -1,0 +1,75 @@
+#container{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+}
+
+#board{
+    display:grid;
+    gap:10px;
+    padding:20px;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows:1fr 1fr;
+    background-color: #f59994;
+    width:70vw;
+    min-height:20vh;
+    border-radius:40px;
+    border-color:black;
+    border-style:solid;
+    border-width:1px;
+}
+
+#p1{
+    grid-column: 1
+}
+
+#p2{
+    grid-column: 8
+
+}
+
+.player-slot{
+    background-color:#d94d99;
+    border-radius:30px;
+    grid-row:1 / span 2;
+    display:flex;
+    flex-direction: column;
+    padding: 1px;
+    color:black;
+    border-color:black;
+    border-style:solid;
+    border-width:1px;
+
+}
+
+.slot{
+    display:flex;
+
+    flex-direction: column;
+    padding: 1px;
+
+    border-radius:40px;
+    background-color:#d94d99;
+    align-items:center;
+    color:black;
+    border-color:black;
+    border-style:solid;
+
+    border-width:1px;
+}
+
+.marble{
+
+    flex-shrink:1;
+    background-color:#008aa1;
+    color:black;
+    border-color:black;
+    border-style:solid;
+    margin: auto;
+    border-radius:50%;
+    border-width:1px;
+    min-width:1px;
+    min-height:1px;
+    padding:1.5vw;
+}
